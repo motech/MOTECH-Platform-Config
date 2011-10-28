@@ -1,9 +1,15 @@
 class activemq {
   include java::open_jdk
 
+  user { "activemq":
+    ensure => present,
+    home   => '/opt/activemq',
+    name   => 'activemq',
+  }
+  
   file { "/tmp/apache-activemq-5.5.0-bin.tar.gz":
-    owner  => root,
-    group  => root,
+    owner  => activemq,
+    group  => activemq,
     mode   => 755,
     source => "puppet:///modules/activemq/apache-activemq-5.5.0-bin.tar.gz",
   }
@@ -14,6 +20,13 @@ class activemq {
     creates => "/opt/apache-activemq-5.5.0",
     path    => ["/bin",],
     require => File["/tmp/apache-activemq-5.5.0-bin.tar.gz"],
+  }
+
+  exec { "activemq_chown":
+    command => "chown -R activemq:activemq /opt/apache-activemq-5.5.0",
+    cwd     => "/opt",
+    path    => ["/bin",],
+    require => Exec["activemq_untar"],
   }
 
   file { '/opt/activemq':
@@ -30,10 +43,10 @@ class activemq {
   }
 
   file { "/opt/activemq/conf/activemq.xml":
-    owner  => root,
-    group  => root,
+    owner  => activemq,
+    group  => activemq,
     mode   => 755,
-    source => "puppet:///modules/activemq/activemq-init.d",
+    source => "puppet:///modules/activemq/conf/activemq.xml",
     require => File['/opt/activemq'],
   }
 
