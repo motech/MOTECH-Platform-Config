@@ -15,13 +15,10 @@ class activemq {
     path    => ["/bin",],
     require => File["/tmp/apache-activemq-5.5.0-bin.tar.gz"],
   }
-  
-  exec { "rename_activemq_dir":
-    command => "mv apache-activemq-5.5.0 activemq",
-    cwd => '/opt',
-    path => ["/bin",],
-    require => Exec["activemq_untar"],
-    creates => '/opt/activemq',
+
+  file { '/opt/activemq':
+    ensure => link,
+    target => '/opt/apache-activemq-5.5.0',
   }
 
   file { "/etc/init.d/activemq":
@@ -29,7 +26,15 @@ class activemq {
     group  => root,
     mode   => 755,
     source => "puppet:///modules/activemq/activemq-init.d",
-    require => Exec["rename_activemq_dir"],
+    require => File['/opt/activemq'],
+  }
+
+  file { "/opt/activemq/conf/activemq.xml":
+    owner  => root,
+    group  => root,
+    mode   => 755,
+    source => "puppet:///modules/activemq/activemq-init.d",
+    require => File['/opt/activemq'],
   }
 
   service { "activemq":
