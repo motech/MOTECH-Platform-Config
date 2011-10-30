@@ -1,4 +1,4 @@
-class activemq::db
+class activemq::db {
   mysqldb { "activemq":
     user => "motech",
     password => "password",
