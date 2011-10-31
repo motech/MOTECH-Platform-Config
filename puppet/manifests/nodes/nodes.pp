@@ -7,10 +7,9 @@ node default {
   include activemq::db
   include tomcat
   
-#  tomcat::deployment { "SimpleServlet":
-#    path => '/srv/puppet-tomcat-demo/java_src/SimpleServlet.war'
+#  tomcat::deployment {"motech":
+#    path => "",
 #  }
-
 }
 
 import "dev"
